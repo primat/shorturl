@@ -1,0 +1,53 @@
+<!doctype html>
+<html class="no-js" lang="">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <title>Generate a Short URL</title>
+
+    <meta name="description" content="Short URL Generator">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!--<link rel="stylesheet" href="css/main.css">-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <style>
+    </style>
+
+</head>
+<body>
+
+<div class="page">
+
+    <div class="row">
+        <div class="col-md-4"></div>
+
+        <div class="col-md-4">
+
+            <div id="form-url-shortener">
+                <h3 class="text-center">
+                    <label for="url" class="text-center">Which URL would you like to shorten?</label>
+                </h3>
+                <input type="text" id="url" class="form-control" value="" placeholder="Enter a URL" />
+            </div>
+
+            <h3 id="short-url" class="text-center"></h3>
+            <div class="err text-center" style="display:none"></div>
+            <p class="text-center">
+                <button class="btn btn-lg btn-primary cta" disabled="disabled">Get the short URL!</button>
+            </p>
+
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous"></script>
+
+<script src="js/main.js"></script>
+
+</body>
+</html>
