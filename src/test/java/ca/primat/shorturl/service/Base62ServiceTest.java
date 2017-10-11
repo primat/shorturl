@@ -47,15 +47,24 @@ public class Base62ServiceTest {
     }
 
     @Test
-    public void testEncodeMaxMinusOne() {
+    public void testEncode72() {
+        Assert.assertEquals("1a", base62Service.encode(72L));
+    }
+
+    @Test
+    public void testEncodeSlugMaxMinusOne() {
         Assert.assertEquals("ZZZZZZZZZY", base62Service.encode(839299365868340222L));
     }
 
     @Test
-    public void testEncodeMax() {
+    public void testEncodeSlugMax() {
         Assert.assertEquals("ZZZZZZZZZZ", base62Service.encode(839299365868340223L));
     }
 
+    @Test
+    public void testEncodeSlugMaxPlusOne() {
+        Assert.assertEquals("10000000000", base62Service.encode(839299365868340224L));
+    }
 
     // Decoding method tests
 
@@ -67,11 +76,6 @@ public class Base62ServiceTest {
     @Test
     public void testDecode1() {
         Assert.assertEquals(1L, base62Service.decode("1"));
-    }
-
-    @Test
-    public void testDecodeMax() {
-        Assert.assertEquals(839299365868340223L, base62Service.decode("ZZZZZZZZZZ"));
     }
 
     @Test
@@ -94,14 +98,23 @@ public class Base62ServiceTest {
         Assert.assertEquals(62L, base62Service.decode("10"));
     }
 
+    @Test
+    public void testDecode72() {
+        Assert.assertEquals(72L, base62Service.decode("1a"));
+    }
 
-//    @Test
-//    public void testDecodeMaxPlusOne() {
-//        Assert.assertEquals(839299365868340223L, base62Service.decode("10000000000"));
-//    }
+    @Test
+    public void testDecodeSlugMaxMinusOne() {
+        Assert.assertEquals(839299365868340222L, base62Service.decode("ZZZZZZZZZY"));
+    }
 
-//    @Test
-//    public void testEncodeMaxPlusOne() {
-//        Assert.assertEquals("10000000000", base62Service.encode(839299365868340224L));
-//    }
+    @Test
+    public void testDecodeSlugMax() {
+        Assert.assertEquals(839299365868340223L, base62Service.decode("ZZZZZZZZZZ"));
+    }
+
+    @Test
+    public void testDecodeSlugMaxPlusOne() {
+        Assert.assertEquals(839299365868340224L, base62Service.decode("10000000000"));
+    }
 }
