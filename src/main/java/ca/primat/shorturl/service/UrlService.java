@@ -4,6 +4,7 @@ import ca.primat.shorturl.model.dao.ShortUrlRepository;
 import ca.primat.shorturl.model.ShortUrl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -27,6 +28,7 @@ public class UrlService {
      * @param absoluteUrl The absolute URL that will be mapped to an existing or newly created short URL
      * @return Returns the existing URL or a new one along with it's short URL.
      */
+    @Transactional
     public ShortUrl getOrCreateShortUrl(String absoluteUrl) {
 
         ShortUrl shortUrl;
