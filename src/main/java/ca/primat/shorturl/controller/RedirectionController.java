@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * The redirection controller handles the redirections of the short URLs.
+ * The redirection controller handles HTTP redirections of {@link ShortUrl}s.
  */
 @Controller
 public class RedirectionController {
