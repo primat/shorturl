@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-
+/**
+ * Rest interface for the Short URL entity
+ */
 @RestController
 public class ShortUrlRestController {
 
@@ -20,10 +22,10 @@ public class ShortUrlRestController {
     }
 
     /**
-     * REST controller which handles a "get or create" type operation on ShortUrl
+     * Handles a "get or create" type operation on ShortUrl
      * @param absoluteUrl The absolute URL to associate with the short URL
      * @return Returns a ShortUrl as JSON. If the maximum number of items has been reached, then a HTTP 403 is
-     * returned. If the URL passed is invlid, returns a HTTP 400.
+     * returned. If the URL passed is invalid, returns a HTTP 400.
      */
     @PostMapping(value = "/api/v1/shorturl")
     public ResponseEntity<ShortUrl> getOrCreate(@RequestParam(value="url") String absoluteUrl) {
