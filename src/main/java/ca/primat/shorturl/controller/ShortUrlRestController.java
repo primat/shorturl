@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/shorturl")
 public class ShortUrlRestController {
 
-    private ShortUrlService shortUrlService;
+    private final ShortUrlService shortUrlService;
 
     @Autowired
     public ShortUrlRestController(ShortUrlService shortUrlService) {

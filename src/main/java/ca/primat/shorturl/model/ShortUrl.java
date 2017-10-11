@@ -18,29 +18,14 @@ public class ShortUrl {
     @Column(unique=true)
     @JsonIgnore
     private long id;
-
     @Transient
     private String slug; // Holds the the id encoded as a base62 string
-
-    private String url; // Holds the absolute URL that the short version maps to.
-
-    //
-    // Constructors
-    //
-
-    public ShortUrl() {
-        this.url = "";
-        this.slug = "";
-    }
+    private final String url; // Holds the absolute URL that the short version maps to.
 
     public ShortUrl(String url) {
         this.url = url;
         this.slug = "";
     }
-
-    //
-    // Accessors and mutators
-    //
 
     public Long getId() {
         return id;
@@ -60,9 +45,5 @@ public class ShortUrl {
 
     public void setSlug(String slug) {
         this.slug = slug;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
     }
 }

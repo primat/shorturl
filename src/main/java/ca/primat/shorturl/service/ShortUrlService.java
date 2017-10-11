@@ -14,8 +14,8 @@ import java.util.List;
 @Service
 public class ShortUrlService {
 
-    private Base62Service base62Service;
-    private ShortUrlRepository shortUrlRepository;
+    private final Base62Service base62Service;
+    private final ShortUrlRepository shortUrlRepository;
 
     @Autowired
     public ShortUrlService(Base62Service base62Service, ShortUrlRepository shortUrlRepository) {

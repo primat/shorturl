@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 public class RedirectionController {
 
-    private ShortUrlService shortUrlService;
+    private final ShortUrlService shortUrlService;
 
     @Autowired
     public RedirectionController(ShortUrlService shortUrlService) {
