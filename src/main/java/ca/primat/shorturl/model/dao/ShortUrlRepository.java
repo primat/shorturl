@@ -7,8 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Transactional
-@Repository
+@Transactional(readOnly = true)
 public interface ShortUrlRepository extends JpaRepository<ShortUrl, Long> {
 
     List<ShortUrl> findByUrl(String url);
