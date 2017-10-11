@@ -13,12 +13,6 @@ public class Base62Service {
      */
     private final char[] BASE62_DIGITS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
 
-    /*
-     * The highest ID possible. Since a short URL cannot contain more than 10 alphanumeric characters,
-     * we are limited to 62^10-1 (or 839,299,365,868,340,223) items maximum.
-     */
-    //public static final long MAX_ID = 839299365868340223L; // Corresponds to ten consecutive Z's
-
     /**
      * Returns the base 62 encoded string of a (Long) decimal number.
      * @param value The decimal value to encode
@@ -27,8 +21,8 @@ public class Base62Service {
     String encode(long value) {
         final StringBuilder sb = new StringBuilder(1);
 
-        // Keep dividing by 62 and taking the remainder. using the remainder as the index in BASE62_DIGITS,
-        // we get each digits in the encoded string
+        // Keep dividing by 62 and taking the remainder. Using the remainder as the index
+        // in BASE62_DIGITS, build each digit in the encoded string
         do {
             sb.insert(0, BASE62_DIGITS[(int)(value % 62)]);
             value /= 62;
@@ -51,20 +45,19 @@ public class Base62Service {
 
         for (int i = value.length() - 1; i >= 0; i--) {
 
-            // Find the offset between the ascii value of value.charAt(i) and it's position in BASE62_DIGITS.
+            // Look at each characters in the string, starting from the last, that is, value.charAt(i)
+            // Find the offset between the ascii value of the character and its position in BASE62_DIGITS.
+            // asciiValue+offset is the value of the character in base 10
 
             int asciiValue = value.charAt(i);
             int offset;
-            if (asciiValue > 90) { // value.charAt(i) is lowercase alpha
-                // ascii(a) = 97, BASE62_DIGITS[10] = 'a', offset = 10 - 97 = -87
+            if (asciiValue > 90) { // The character is lowercase alpha
                 offset = -87;
             }
-            else if (asciiValue > 57) { // value.charAt(i) is uppercase alpha
-                // ascii(A) = 65, BASE62_DIGITS[36] = 'A', offset = 36 - 65 = -29
+            else if (asciiValue > 57) { // The character is uppercase alpha
                 offset = -29;
             }
-            else { // value.charAt(i) is a decimal number
-                // ascii(0) = 48, BASE62_DIGITS[0] = '0', offset = 0 - 48 = -48
+            else { // The character  is a decimal number
                 offset = -48;
             }
 
