@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * UrlService provides an interface to the controllers for manipulating {@link ShortUrl}s
+ * Provides an interface to the controllers for manipulating {@link ShortUrl}s
  */
 @Service
 public class ShortUrlService {
