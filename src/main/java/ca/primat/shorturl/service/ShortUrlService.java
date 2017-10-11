@@ -43,18 +43,19 @@ public class ShortUrlService {
             shortUrlRepository.save(shortUrl);
         }
 
-        // Set the short URL's slug - calculated from the its ID
+        // Set the short URL's slug - calculated from its ID
         shortUrl.setSlug(base62Service.encode(shortUrl.getId()));
 
         return shortUrl;
     }
 
     /**
-     * Get a {@link ShortUrl} by its ID
-     * @param id The ID of the {@link ShortUrl} to retrieve
+     * Get a {@link ShortUrl} by its slug
+     * @param slug The slug of the {@link ShortUrl}
      * @return The {@link ShortUrl} object
      */
-    public ShortUrl getById(long id) {
-        return shortUrlRepository.findOne(id);
+    public ShortUrl getBySlug(String slug) {
+        long lookupId = base62Service.decode(slug);
+        return shortUrlRepository.findOne(lookupId);
     }
 }

@@ -2,8 +2,7 @@ package ca.primat.shorturl.controller;
 
 
 import ca.primat.shorturl.model.ShortUrl;
-import ca.primat.shorturl.service.Base62Service;
-import ca.primat.shorturl.service.UrlService;
+import ca.primat.shorturl.service.ShortUrlService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,29 +21,28 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 public class RedirectionController {
 
-    private Base62Service base62Service;
-    private UrlService urlService;
+    private ShortUrlService shortUrlService;
 
     @Autowired
-    public RedirectionController(Base62Service base62Service, UrlService urlService) {
-        this.base62Service = base62Service;
-        this.urlService = urlService;
+    public RedirectionController(ShortUrlService shortUrlService) {
+        this.shortUrlService = shortUrlService;
     }
 
     /**
-     * Checks if a slug exists and redirects to the appropriate URL. Otherwise, returns an HTTP 404 "Not Found"
-     * @param slug The slug used in the lookup, coming form the path of the URL
+     * Grabs the first segment of the request URL (i.e. a slug) and uses it to find a {@link ShortUrl}.
+     * If the {@link ShortUrl} exists, redirect to its mapped absolute URL. Otherwise, return a HTTP 404 not found.
+     * @param slug The slug used in the lookup
      * @param request The request object
      * @param response The response object
-     * @return Returns an HTTP 404 if the slug doesn't exist or a redirects with an HTTP 303 to the associated URL
+     * @return Returns returns a {@link ResponseEntity} with HTTP status 404 if the slug doesn't exist or an
+     * HTTP 303 with location header set to the mapped absolute URL of the found {@link ShortUrl}
      */
     @RequestMapping(value = "/{slug:^[A-Za-z0-9]{1,10}$}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity redirect(@PathVariable String slug, HttpServletRequest request, HttpServletResponse response) {
 
-        // Convert the slug (i.e. path of the short URL) to an ID and use the ID to get the URL from the DB
-        long lookupId = base62Service.decode(slug);
-        ShortUrl shortUrl = urlService.getById(lookupId);
+        // Get the short URL by its slug
+        ShortUrl shortUrl = shortUrlService.getBySlug(slug);
 
         // Return a 404 if no slug/ID/short URL exists.
         if (shortUrl == null) {

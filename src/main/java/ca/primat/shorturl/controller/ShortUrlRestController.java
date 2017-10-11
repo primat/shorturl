@@ -1,13 +1,10 @@
 package ca.primat.shorturl.controller;
 
 import ca.primat.shorturl.model.ShortUrl;
-import ca.primat.shorturl.service.UrlService;
+import ca.primat.shorturl.service.ShortUrlService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * Rest interface for the Short URL entity
@@ -16,18 +13,17 @@ import java.util.List;
 @RequestMapping("/api/v1/shorturl")
 public class ShortUrlRestController {
 
-    private UrlService urlService;
+    private ShortUrlService shortUrlService;
 
     @Autowired
-    public ShortUrlRestController(UrlService urlService) {
-        this.urlService = urlService;
+    public ShortUrlRestController(ShortUrlService shortUrlService) {
+        this.shortUrlService = shortUrlService;
     }
 
 //    @GetMapping(value = "/api/v1/shorturl")
 //    public ResponseEntity<List<ShortUrl>> getAll(@RequestParam(value="url") String absoluteUrl) {
 //        return
 //    }
-
 
 //return new ResponseEntity<String>("Hello World", responseHeaders, HttpStatus.CREATED);
 
@@ -42,10 +38,10 @@ public class ShortUrlRestController {
 
         // TODO: Reject invalid URLs and add error handling
 
-        ShortUrl shortUrl = urlService.getOrCreateShortUrl(absoluteUrl);
+        ShortUrl shortUrl = shortUrlService.getOrCreateShortUrl(absoluteUrl);
 
         // TODO: Return HTTP 200 if object not created, otherwise return 201.
         return ResponseEntity.ok(shortUrl);
-        //return new ResponseEntity<ShortUrl>(shortUrl,HttpStatus.CREATED);
+        //return new ResponseEntity<ShortUrl>(shortUrl, HttpStatus.CREATED);
     }
 }
