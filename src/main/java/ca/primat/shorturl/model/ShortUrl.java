@@ -20,7 +20,9 @@ public class ShortUrl {
     private long id;
     @Transient
     private String slug; // Holds the the id encoded as a base62 string
-    private final String url; // Holds the absolute URL that the short version maps to.
+    private String url; // Holds the absolute URL that the short version maps to.
+
+    public ShortUrl() {} // Required for bean
 
     public ShortUrl(String url) {
         this.url = url;
