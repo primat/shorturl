@@ -22,7 +22,8 @@ $(document).ready(function(){
             $.ajax({
                 type: "POST",
                 url: "/api/v1/shorturl",
-                data: { url: urlValue },
+                data: JSON.stringify({ url: urlValue }),
+                contentType: "application/json",
                 success: function(data){
                     var loc = window.location;
                     var shortUrlString = loc.protocol + "//" + loc.host + "/" + loc.pathname.split('/')[1] + data.slug;

@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 /**
  * Rest interface for the Short URL entity
  */
@@ -20,28 +22,15 @@ public class ShortUrlRestController {
         this.shortUrlService = shortUrlService;
     }
 
-//    @GetMapping(value = "/api/v1/shorturl")
-//    public ResponseEntity<List<ShortUrl>> getAll(@RequestParam(value="url") String absoluteUrl) {
-//        return
-//    }
-
-//return new ResponseEntity<String>("Hello World", responseHeaders, HttpStatus.CREATED);
-
     /**
      * Handles a "get or create" type operation on ShortUrl
-     * @param absoluteUrl The absolute URL to associate with the short URL
+     * @param newShortUrl The {@link ShortUrl} to create based on the request data
      * @return Returns a ShortUrl as JSON. If the maximum number of items has been reached, then a HTTP 403 is
      * returned. If the URL passed is invalid, returns a HTTP 400.
      */
     @PostMapping(value = "")
-    public ResponseEntity<ShortUrl> getOrCreate(@RequestParam(value="url") String absoluteUrl) {
+    public ResponseEntity<ShortUrl> getOrCreate(@Valid @RequestBody ShortUrl newShortUrl) {
 
-        // TODO: Reject invalid URLs and add error handling
-
-        ShortUrl shortUrl = shortUrlService.getOrCreateShortUrl(absoluteUrl);
-
-        // TODO: Return HTTP 200 if object not created, otherwise return 201.
-        return ResponseEntity.ok(shortUrl);
-        //return new ResponseEntity<ShortUrl>(shortUrl, HttpStatus.CREATED);
+        return shortUrlService.getOrCreate(newShortUrl);
     }
 }

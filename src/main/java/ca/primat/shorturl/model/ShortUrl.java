@@ -1,8 +1,12 @@
 package ca.primat.shorturl.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
 
 /**
  * ShortUrl represents a mapping between an absolute URL and a (generated) shorter URL.
@@ -17,9 +21,17 @@ public class ShortUrl {
     @GeneratedValue(strategy=GenerationType.SEQUENCE)
     @Column(unique=true)
     @JsonIgnore
+    //@Max(value=839299365868340223L)
     private long id;
+
     @Transient
+    //@Length(max = 10)
     private String slug; // Holds the the id encoded as a base62 string
+
+    @URL
+    @Length(min = 1, max = 255)
+    @NotEmpty
+    @Column(unique=true)
     private String url; // Holds the absolute URL that the short version maps to.
 
     public ShortUrl() {} // Required for bean
