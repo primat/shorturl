@@ -2,67 +2,80 @@ package ca.primat.shorturl.service;
 
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * The Base62Service class handles conversion of decimal numbers to base 62 and vice versa.
  */
 @Service
 public class Base62Service {
 
+    // The following properties are used as a cache, for rapid conversion between decimal and non-decimal digits
+    private final String DIGITS_STRING = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private final char[] DIGITS_ARRAY = DIGITS_STRING.toCharArray();
+    private final Map<Character, Integer> DIGITS_MAP;
+    private final int BASE = DIGITS_ARRAY.length;
+
     /**
-     * The set of digits used in the base 62 representation of a number.
+     * Constructor. Initialize DIGITS_MAP.
      */
-    private final char[] BASE62_DIGITS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
+    public Base62Service() {
+        DIGITS_MAP = new HashMap<Character, Integer>();
+        for (int i = 0; i < DIGITS_STRING.length(); i++) {
+            DIGITS_MAP.put(DIGITS_ARRAY[i], i);
+        }
+    }
 
     /**
      * Returns the base 62 encoded string of a (Long) decimal number.
      * @param value The decimal value to encode
      * @return @String the base 62 string of an integer
      */
-    String encode(long value) {
+    public String encode(long value) {
+
+        // Do not proceed on bad input
+        if (value < 0) {
+            throw new IllegalArgumentException();
+        }
+
+        // Keep dividing by BASE and taking the remainder. Using the remainder as the index
+        // in DIGITS_ARRAY, build each digit in resulting number
         final StringBuilder sb = new StringBuilder(1);
 
-        // Keep dividing by 62 and taking the remainder. Using the remainder as the index
-        // in BASE62_DIGITS, build each digit in the encoded string
         do {
-            sb.insert(0, BASE62_DIGITS[(int)(value % 62)]);
-            value /= 62;
+            char c = DIGITS_ARRAY[(int)(value % BASE)];
+            sb.insert(0, c);
+            value /= BASE;
         } while (value > 0);
 
         return sb.toString();
     }
 
     /**
-     * Returns the decimal value of a base 62 encoded string.
-     * @param value The base 62 number to decode
-     * @return @Long the decimal value of a base 62 encoded string.
+     * Returns the decimal value of a base 62 number, where the number is encoded as a string.
+     * @param encodedNumber The base 62 number to decode
+     * @return The decimal value of encodedNumber
      */
-    public long decode(String value) {
+    public long decode(String encodedNumber) {
+
+        // Loop through all digits in the base 62 number and convert each one to its
+        // decimal value. Sum them all up for the final result.
         long result = 0;
         long power = 1;
 
-        // Loop through all digits in the base62 encoded string and convert
-        // each one to the appropriate decimal value. Sum them all up for the final result.
+        for (int i = encodedNumber.length() - 1; i >= 0; i--) {
 
-        for (int i = value.length() - 1; i >= 0; i--) {
+            // Get the decimal value of the character we're currently looking at
+            Integer decimalValue = DIGITS_MAP.get(encodedNumber.charAt(i));
 
-            // Look at each characters in the string, starting from the last, that is, value.charAt(i)
-            // Find the offset between the ascii value of the character and its position in BASE62_DIGITS.
-            // asciiValue+offset is the value of the character in base 10
-
-            int asciiValue = value.charAt(i);
-            int offset;
-            if (asciiValue > 90) { // The character is lowercase alpha
-                offset = -87;
-            }
-            else if (asciiValue > 57) { // The character is uppercase alpha
-                offset = -29;
-            }
-            else { // The character  is a decimal number
-                offset = -48;
+            // Handle invalid characters in the encoded string
+            if (decimalValue == null) {
+                throw new IllegalArgumentException();
             }
 
-            result += (asciiValue + offset) * power;
-            power *= 62;
+            result += decimalValue * power;
+            power *= BASE;
         }
 
         return result;
