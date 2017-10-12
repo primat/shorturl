@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Provides an interface to the controllers for manipulating {@link ShortUrl}s
@@ -57,5 +59,16 @@ public class ShortUrlService {
     public ShortUrl getBySlug(String slug) {
         long lookupId = base62Service.decode(slug);
         return shortUrlRepository.findOne(lookupId);
+    }
+
+    /**
+     * Validates a short URL slug
+     * @param slug The string/slug to validate
+     */
+    public boolean isValidSlug(String slug) {
+        String pattern = "^[A-Za-z0-9]{1,10}$";
+        Pattern r = Pattern.compile(pattern);
+        Matcher m = r.matcher(slug);
+        return m.find();
     }
 }
