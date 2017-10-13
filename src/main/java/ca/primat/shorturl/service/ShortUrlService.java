@@ -3,11 +3,14 @@ package ca.primat.shorturl.service;
 import ca.primat.shorturl.model.dao.ShortUrlRepository;
 import ca.primat.shorturl.model.ShortUrl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,19 +39,21 @@ public class ShortUrlService {
 
         ShortUrl shortUrl = shortUrlRepository.findByUrl(newShortUrl.getUrl());
 
-        // Get the existing URL or create a new one if none exists
-        if (shortUrl != null) {
-            this.assignSlug(shortUrl);
-            return ResponseEntity.ok(shortUrl);
+        if (shortUrl == null) { // No URL exists
+            shortUrlRepository.save(newShortUrl);
+            this.assignSlug(newShortUrl);
+
+            HttpHeaders headers = new HttpHeaders();
+            URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                    .path("/")
+                    .buildAndExpand(newShortUrl.getSlug())
+                    .toUri();
+            headers.setLocation(location);
+            return new ResponseEntity<>(newShortUrl, headers, HttpStatus.CREATED);
         }
 
-        shortUrlRepository.save(newShortUrl);
-        this.assignSlug(newShortUrl);
-
-        // Keep this next line commented for now, in case it is RESTful to use it
-        //URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/").buildAndExpand(slug).toUri();
-
-        return new ResponseEntity<>(newShortUrl, HttpStatus.CREATED);
+        this.assignSlug(shortUrl);
+        return ResponseEntity.ok(shortUrl);
     }
 
     /**
@@ -76,7 +81,7 @@ public class ShortUrlService {
      * Calculates a {@link ShortUrl}'s slug and assigns it, assuming it has a non-zero ID
      * @param shortUrl the {@link ShortUrl} to assign its slug
      */
-    private void assignSlug(ShortUrl shortUrl) {
+    protected void assignSlug(ShortUrl shortUrl) {
         if (shortUrl.getId() > 0) {
             shortUrl.setSlug(base62Service.encode(shortUrl.getId()));
         }

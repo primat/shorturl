@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 /**
- * Rest interface for the Short URL entity
+ * Rest controller for {@link ShortUrl}
  */
 @RestController
 @RequestMapping("/api/v1/shorturl")
@@ -23,14 +23,14 @@ public class ShortUrlRestController {
     }
 
     /**
-     * Handles a "get or create" type operation on ShortUrl
-     * @param newShortUrl The {@link ShortUrl} to create based on the request data
-     * @return Returns a ShortUrl as JSON. If the maximum number of items has been reached, then a HTTP 403 is
-     * returned. If the URL passed is invalid, returns a HTTP 400.
+     * Handles a "get or create" type operation on {@link ShortUrl}
+     * @param shortUrl The {@link ShortUrl} to retrieve or create, based on the request data
+     * @return Returns a {@link ShortUrl} as JSON. If the item was creates, return an HTTP 201.
+     * If a item already exists, return the item and a HTTP 200. If the URL passed is invalid, returns a HTTP 400.
      */
     @PostMapping(value = "")
-    public ResponseEntity<ShortUrl> getOrCreate(@Valid @RequestBody ShortUrl newShortUrl) {
+    public ResponseEntity<ShortUrl> getOrCreate(@Valid @RequestBody ShortUrl shortUrl) {
 
-        return shortUrlService.getOrCreate(newShortUrl);
+        return shortUrlService.getOrCreate(shortUrl);
     }
 }

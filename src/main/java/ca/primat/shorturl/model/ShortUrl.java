@@ -22,7 +22,7 @@ public class ShortUrl {
     @Column(unique=true)
     @JsonIgnore
     //@Max(value=839299365868340223L)
-    private long id;
+    private long id = 0L;
 
     @Transient
     //@Length(max = 10)
