@@ -1,2 +1,1 @@
-drop sequence hibernate_sequence;
-drop table short_url
+DROP TABLE IF EXISTS SHORT_URL;

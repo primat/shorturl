@@ -19,7 +19,7 @@ public class ShortUrl {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @JsonIgnore
-    private long id;
+    private long id = -1;
 
     @Transient
     private String slug; // Holds the the id encoded as a base62 string

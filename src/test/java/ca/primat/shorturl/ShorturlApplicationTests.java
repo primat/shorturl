@@ -7,10 +7,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+//@SqlGroup({
+//		@Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:beforeTestRun.sql"),
+//		@Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts = "classpath:afterTestRun.sql")
+//})
 public class ShorturlApplicationTests {
 
 	@Test
-	public void contextLoads() {
+	public void contextLoads() throws Exception {
 	}
-
 }

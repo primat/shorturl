@@ -47,7 +47,7 @@ public class ShortUrlServiceTest {
 
         // Test that the slug doesn't get overwritten
         shortUrl.setSlug("aaa");
-        Mockito.when(base62Service.encode(0L)).thenReturn("zZZ");
+        Mockito.when(base62Service.encode(99L)).thenReturn("zZZ");
         shortUrlService.assignSlug(shortUrl);
         assertThat(shortUrl.getSlug()).isEqualTo("aaa");
 
