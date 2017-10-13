@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 
 /**
  * Handles HTTP redirections for {@link ShortUrl}s.
@@ -45,12 +44,8 @@ public class RedirectionController {
         }
 
         // Otherwise, redirect to the mapped URL. If the mapped URL is not valid, then return an HTTP 500 status
-//        HttpHeaders responseHeaders = new HttpHeaders();
         HttpHeaders headers = new HttpHeaders();
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{slug}")
-                .buildAndExpand(shortUrl.getSlug())
-                .toUri();
+        URI location = ServletUriComponentsBuilder.fromUriString(shortUrl.getUrl()).build().toUri();
         headers.setLocation(location);
         return new ResponseEntity<String>(headers, HttpStatus.SEE_OTHER);
     }
