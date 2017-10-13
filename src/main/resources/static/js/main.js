@@ -1,54 +1,48 @@
+(function () {
+    "use strict";
 
-// jQuery file handles all UI logic (on the home page)
-$(document).ready(function(){
+    var app = angular.module("shorturlapp", []);
 
-    // Cached selectors
-    var cta = $(".cta").first();
-    var err = $(".err").first();
-    var url = $("#url");
-    var shortUrl = $("#short-url");
-    var form = $("#form-url-shortener");
+    app.controller("ShortUrlController", ['$scope', '$http', function($scope, $http) {
 
-    // Handler for submitting the URL to the shortener service
-    cta.on("click", function() {
-        var urlValue = url.val();
+        var self = this;
+        var shortUrlTemplate = {
+            url: ""
+        };
 
-        if (urlValue !== "") {
-            // Reset the page state before re-submitting a URL
-            shortUrl.html("");
-            err.html("").hide();
+        this.form = {
+            errors: []
+        };
+        this.fields = angular.copy(shortUrlTemplate);
 
-            // Make the ajax call to get a short URL
-            $.ajax({
-                type: "POST",
-                url: "/api/v1/shorturl",
-                data: JSON.stringify({ url: urlValue }),
-                contentType: "application/json",
-                success: function(data){
-                    var loc = window.location;
-                    var shortUrlString = loc.protocol + "//" + loc.host + "/" + loc.pathname.split('/')[1] + data.slug;
-                    cta.attr("disabled", "disabled");
-                    $('<a>',{
-                        text: shortUrlString,
-                        href: shortUrlString,
-                        target: "_blank"
-                    }).appendTo(shortUrl);
-                }
+        // Data structure to hold the short and long URLs after we get a slug from the server
+        this.url = {
+            short: "",
+            long: ""
+        };
+
+        /**
+         * Handler for submitting the form to get a short URL
+         */
+        this.submit = function() {
+            self.form.errors.length = 0;
+
+            $http({
+                method: 'POST',
+                url: '/api/v1/shorturl',
+                data: this.fields
+
+            }).then(function successCallback(response) {
+                var loc = window.location;
+                self.url.short = loc.protocol + "//" + loc.host + "/" + loc.pathname.split('/')[1] + response.data.slug;
+                self.url.long = response.data.url;
+                self.fields.url = "";
+
+            }, function errorCallback(response) {
+                self.form.errors = response.data.errors;
             });
         }
-    });
 
-    // Handle changes in the URL form field. When the field is empty, disable the submit button
-    url.keyup(function() {
-        // TODO: Validate input ( i.e. $( this ).val())
-        shortUrl.html("");
-        err.html("").hide();
+    }]);
 
-        if (url.val() === "") {
-            cta.attr("disabled", "disabled");
-        }
-        else {
-            cta.removeAttr("disabled");
-        }
-    });
-});
+}());

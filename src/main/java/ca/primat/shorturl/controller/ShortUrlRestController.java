@@ -45,7 +45,6 @@ public class ShortUrlRestController {
         ShortUrl shortUrl = shortUrlService.getBySlug(slug);
         if (shortUrl == null) {
             throw new EntityNotFoundException();
-            //return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(shortUrl);
     }

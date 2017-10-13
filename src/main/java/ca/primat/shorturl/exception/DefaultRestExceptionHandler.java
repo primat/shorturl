@@ -16,9 +16,13 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Global exception handler
+ */
 @ControllerAdvice
 public class DefaultRestExceptionHandler extends ResponseEntityExceptionHandler {
 
+    // Handles REST HTTP 400 (invalid data)
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex,
@@ -37,6 +41,7 @@ public class DefaultRestExceptionHandler extends ResponseEntityExceptionHandler 
         return handleExceptionInternal(ex, restError, headers, restError.getStatus(), request);
     }
 
+    // Handles REST HTTP 400 (unreadable data)
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(
             HttpMessageNotReadableException ex,
@@ -45,17 +50,11 @@ public class DefaultRestExceptionHandler extends ResponseEntityExceptionHandler 
             WebRequest request) {
 
         List<String> errors = new ArrayList<String>();
-//        for (FieldError error : ex.getBindingResult().getFieldErrors()) {
-//            errors.add(error.getField() + ": " + error.getDefaultMessage());
-//        }
-//        for (ObjectError error : ex.getBindingResult().getGlobalErrors()) {
-//            errors.add(error.getObjectName() + ": " + error.getDefaultMessage());
-//        }
-
         RestError restError = new RestError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), errors);
         return handleExceptionInternal(ex, restError, headers, restError.getStatus(), request);
     }
 
+    // Handles REST HTTP 404
     @ExceptionHandler(EntityNotFoundException.class)
     protected ResponseEntity<Object> handleEntityNotFound(
             EntityNotFoundException ex,

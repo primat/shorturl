@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="no-js" lang="">
+<html lang="en" ng-app="shorturlapp">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -9,45 +9,69 @@
     <meta name="description" content="Short URL Generator">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!--<link rel="stylesheet" href="css/main.css">-->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
-    <style>
-    </style>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.min.js"></script>
+    <script src="js/main.js"></script>
 </head>
 <body>
 
-<div class="page">
+<div class="page" ng-controller="ShortUrlController as ctrl">
 
     <div class="row">
         <div class="col-md-4"></div>
 
         <div class="col-md-4">
 
-            <div id="form-url-shortener">
-                <h3 class="text-center">
-                    <label for="url" class="text-center">Which URL would you like to shorten?</label>
-                </h3>
-                <input type="text" id="url" class="form-control" value="" placeholder="Enter a URL" />
+            <br />
+
+            <div ng-show="ctrl.url.short == '' && ctrl.url.long == ''">
+                <div class="alert alert-danger" role="alert" ng-show="ctrl.form.errors.length > 0">
+                    <div ng-repeat="(i, val) in ctrl.form.errors">
+                        {{val}}
+                    </div>
+                </div>
+
+                <form name="urlshortener">
+                    <h3 class="text-center">
+                        <label for="url" class="text-center">Which URL would you like to shorten?</label>
+                    </h3>
+
+                    <div>
+                        <input type="text" id="url" class="form-control" ng-model="ctrl.fields.url" placeholder="Enter a URL" />
+                    </div>
+
+                    <br />
+
+                    <p class="text-center">
+                        <button class="btn btn-lg btn-primary" ng-hide="ctrl.url.length == 0" ng-click="ctrl.submit()">
+                            Get the short URL!
+                        </button>
+                    </p>
+                </form>
             </div>
 
-            <h3 id="short-url" class="text-center"></h3>
-            <div class="err text-center" style="display:none"></div>
-            <p class="text-center">
-                <button class="btn btn-lg btn-primary cta" disabled="disabled">Get the short URL!</button>
-            </p>
+            <div ng-show="ctrl.url.short != '' && ctrl.url.long != ''">
+                <h3 class="text-center">
+                    <strong>Et voilà!</strong>
+                    <br />
+                    <br />
+                    <a target="_blank" ng-href="{{ ctrl.url.short }}">{{ ctrl.url.short }}</a>
+                </h3>
+                <p class="text-center">(links to {{ ctrl.url.long }})</p>
+                <br />
+                <div class="text-center">
+                    <button class="btn btn-lg btn-primary"ng-click="ctrl.url.short = ''; ctrl.url.long = '';">
+                        Create another one!
+                    </button>
+                </div>
+            </div>
 
         </div>
         <div class="col-md-4"></div>
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.2.1.min.js"
-        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-        crossorigin="anonymous"></script>
-
-<script src="js/main.js"></script>
 
 </body>
 </html>
