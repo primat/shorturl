@@ -15,7 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Provides an interface to the controllers for manipulating {@link ShortUrl}s
+ * Service layer for {@link ShortUrl}s
  */
 @Service
 public class ShortUrlService {
@@ -39,7 +39,7 @@ public class ShortUrlService {
 
         ShortUrl shortUrl = shortUrlRepository.findByUrl(newShortUrl.getUrl());
 
-        if (shortUrl == null) { // No URL exists
+        if (shortUrl == null) { // No such shortUrl exists. Create one.
             shortUrlRepository.save(newShortUrl);
             this.assignSlug(newShortUrl);
 
@@ -63,7 +63,9 @@ public class ShortUrlService {
      */
     public ShortUrl getBySlug(String slug) {
         long lookupId = base62Service.decode(slug);
-        return shortUrlRepository.findOne(lookupId);
+        ShortUrl shortUrl = shortUrlRepository.findOne(lookupId);
+        this.assignSlug(shortUrl);
+        return shortUrl;
     }
 
     /**
@@ -82,7 +84,7 @@ public class ShortUrlService {
      * @param shortUrl the {@link ShortUrl} to assign its slug
      */
     protected void assignSlug(ShortUrl shortUrl) {
-        if (shortUrl.getId() > 0) {
+        if (shortUrl != null && shortUrl.getId() > 0) {
             shortUrl.setSlug(base62Service.encode(shortUrl.getId()));
         }
     }

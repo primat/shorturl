@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -32,7 +33,7 @@ public class RedirectionController {
      * @return Returns returns a {@link ResponseEntity} with HTTP status 404 if the slug doesn't exist or an
      * HTTP 303 with location header set to the mapped absolute URL of the found {@link ShortUrl}
      */
-    @RequestMapping(value = "/{slug:^[A-Za-z0-9]{1,10}$}", method = RequestMethod.GET)
+    @GetMapping(value = "/{slug:^[A-Za-z0-9]{1,10}$}")
     @ResponseBody
     public ResponseEntity redirect(@PathVariable String slug) {
 
@@ -44,20 +45,13 @@ public class RedirectionController {
         }
 
         // Otherwise, redirect to the mapped URL. If the mapped URL is not valid, then return an HTTP 500 status
-        HttpHeaders responseHeaders = new HttpHeaders();
-        URI location;
-        try {
-            location = new URI(shortUrl.getUrl());
-        } catch (URISyntaxException e) {
-            return new ResponseEntity<String>(
-                    "Invalid location URI: " + shortUrl.getUrl(),
-                    HttpStatus.INTERNAL_SERVER_ERROR
-            );
-        }
-
-        responseHeaders.setLocation(location);
-        //response.setHeader("Location", shortUrl.getUrl());
-        return new ResponseEntity<String>(responseHeaders, HttpStatus.SEE_OTHER);
+//        HttpHeaders responseHeaders = new HttpHeaders();
+        HttpHeaders headers = new HttpHeaders();
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{slug}")
+                .buildAndExpand(shortUrl.getSlug())
+                .toUri();
+        headers.setLocation(location);
+        return new ResponseEntity<String>(headers, HttpStatus.SEE_OTHER);
     }
-
 }
