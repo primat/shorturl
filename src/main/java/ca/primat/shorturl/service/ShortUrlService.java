@@ -45,7 +45,7 @@ public class ShortUrlService {
 
             HttpHeaders headers = new HttpHeaders();
             URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                    .path("/")
+                    .path("/{slug}")
                     .buildAndExpand(newShortUrl.getSlug())
                     .toUri();
             headers.setLocation(location);
