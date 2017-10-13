@@ -6,7 +6,6 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
 
 /**
  * ShortUrl represents a mapping between an absolute URL and a (generated) shorter URL.
@@ -18,14 +17,11 @@ import javax.validation.constraints.Max;
 public class ShortUrl {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.SEQUENCE)
-    @Column(unique=true)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @JsonIgnore
-    //@Max(value=839299365868340223L)
-    private long id = 0L;
+    private long id;
 
     @Transient
-    //@Length(max = 10)
     private String slug; // Holds the the id encoded as a base62 string
 
     @URL
