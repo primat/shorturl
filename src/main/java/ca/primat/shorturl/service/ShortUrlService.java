@@ -30,6 +30,28 @@ public class ShortUrlService {
     }
 
     /**
+     * Calculates a {@link ShortUrl}'s slug and assigns it, assuming it has a non-zero ID
+     * @param shortUrl the {@link ShortUrl} to assign its slug
+     */
+    void assignSlug(ShortUrl shortUrl) {
+        if (shortUrl != null && shortUrl.getId() > 0) {
+            shortUrl.setSlug(base62Service.encode(shortUrl.getId()));
+        }
+    }
+
+    /**
+     * Get a {@link ShortUrl} by its slug
+     * @param slug The slug of the {@link ShortUrl}
+     * @return The {@link ShortUrl} object
+     */
+    public ShortUrl getBySlug(String slug) {
+        long lookupId = base62Service.decode(slug);
+        ShortUrl shortUrl = shortUrlRepository.findOne(lookupId);
+        this.assignSlug(shortUrl);
+        return shortUrl;
+    }
+
+    /**
      * Get an existing {@link ShortUrl}, or create a new one
      * @param newShortUrl The input {@link ShortUrl} to get or create
      * @return Returns an existing or new {@link ShortUrl}.
@@ -57,35 +79,13 @@ public class ShortUrlService {
     }
 
     /**
-     * Get a {@link ShortUrl} by its slug
-     * @param slug The slug of the {@link ShortUrl}
-     * @return The {@link ShortUrl} object
-     */
-    public ShortUrl getBySlug(String slug) {
-        long lookupId = base62Service.decode(slug);
-        ShortUrl shortUrl = shortUrlRepository.findOne(lookupId);
-        this.assignSlug(shortUrl);
-        return shortUrl;
-    }
-
-    /**
      * Validates a short URL slug
      * @param slug The string/slug to validate
      */
-    public boolean isValidSlug(String slug) {
+    boolean isValidSlug(String slug) {
         String pattern = "^[A-Za-z0-9]{1,10}$";
         Pattern r = Pattern.compile(pattern);
         Matcher m = r.matcher(slug);
         return m.find();
-    }
-
-    /**
-     * Calculates a {@link ShortUrl}'s slug and assigns it, assuming it has a non-zero ID
-     * @param shortUrl the {@link ShortUrl} to assign its slug
-     */
-    protected void assignSlug(ShortUrl shortUrl) {
-        if (shortUrl != null && shortUrl.getId() > 0) {
-            shortUrl.setSlug(base62Service.encode(shortUrl.getId()));
-        }
     }
 }
