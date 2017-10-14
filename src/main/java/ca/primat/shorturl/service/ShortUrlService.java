@@ -61,7 +61,7 @@ public class ShortUrlService {
 
         ShortUrl shortUrl = shortUrlRepository.findByUrl(newShortUrl.getUrl());
 
-        if (shortUrl == null) { // No such shortUrl exists. Create one.
+        if (shortUrl == null) { // No such shortUrl exists. Create it.
             shortUrlRepository.save(newShortUrl);
             this.assignSlug(newShortUrl);
 
