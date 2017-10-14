@@ -29,7 +29,7 @@ public class DefaultRestExceptionHandler extends ResponseEntityExceptionHandler 
             HttpHeaders headers,
             HttpStatus status,
             WebRequest request) {
-        List<String> errors = new ArrayList<String>();
+        List<String> errors = new ArrayList<>();
         for (FieldError error : ex.getBindingResult().getFieldErrors()) {
             errors.add(error.getField() + ": " + error.getDefaultMessage());
         }
@@ -38,7 +38,7 @@ public class DefaultRestExceptionHandler extends ResponseEntityExceptionHandler 
         }
 
         RestError restError = new RestError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), errors);
-        return handleExceptionInternal(ex, restError, headers, restError.getStatus(), request);
+        return handleExceptionInternal(ex, restError, headers, restError.getHttpStatus(), request);
     }
 
     // Handles REST HTTP 400 (unreadable data)
@@ -49,9 +49,9 @@ public class DefaultRestExceptionHandler extends ResponseEntityExceptionHandler 
             HttpStatus status,
             WebRequest request) {
 
-        List<String> errors = new ArrayList<String>();
+        List<String> errors = new ArrayList<>();
         RestError restError = new RestError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), errors);
-        return handleExceptionInternal(ex, restError, headers, restError.getStatus(), request);
+        return handleExceptionInternal(ex, restError, headers, restError.getHttpStatus(), request);
     }
 
     // Handles REST HTTP 404
@@ -59,8 +59,8 @@ public class DefaultRestExceptionHandler extends ResponseEntityExceptionHandler 
     protected ResponseEntity<Object> handleEntityNotFound(
             EntityNotFoundException ex,
             WebRequest request) {
-        List<String> errors = new ArrayList<String>();
-        RestError restError = new RestError(HttpStatus.NOT_FOUND, ex.getMessage(), errors);
-        return handleExceptionInternal(ex, restError, new HttpHeaders(), restError.getStatus(), request);
+        List<String> errors = new ArrayList<>();
+        RestError restError = new RestError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage(), errors);
+        return handleExceptionInternal(ex, restError, new HttpHeaders(), restError.getHttpStatus(), request);
     }
 }

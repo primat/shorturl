@@ -1,6 +1,7 @@
 package ca.primat.shorturl.controller;
 
 import ca.primat.shorturl.exception.EntityNotFoundException;
+import ca.primat.shorturl.exception.ShortUrlNotFoundException;
 import ca.primat.shorturl.model.ShortUrl;
 import ca.primat.shorturl.service.ShortUrlService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,6 @@ public class ShortUrlRestController {
      */
     @PostMapping(value = "")
     public ResponseEntity<ShortUrl> getOrCreate(@Valid @RequestBody ShortUrl shortUrl) {
-
         return shortUrlService.getOrCreate(shortUrl);
     }
 
@@ -41,11 +41,11 @@ public class ShortUrlRestController {
      * @return Returns a {@link ShortUrl} as JSON. Return a HTTP 404 if no ShortUrl is found.
      */
     @GetMapping(value = "/{slug:^[A-Za-z0-9]{1,10}$}")
-    public ResponseEntity<ShortUrl> get(@PathVariable String slug) {
+    public ShortUrl get(@PathVariable String slug) {
         ShortUrl shortUrl = shortUrlService.getBySlug(slug);
         if (shortUrl == null) {
-            throw new EntityNotFoundException();
+            throw new ShortUrlNotFoundException();
         }
-        return ResponseEntity.ok(shortUrl);
+        return shortUrl;
     }
 }
