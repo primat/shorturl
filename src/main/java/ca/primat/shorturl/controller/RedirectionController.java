@@ -13,7 +13,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 
 /**
- * Handles HTTP redirections for {@link ShortUrl}s.
+ * Handles HTTP redirections for shortened URLs
  */
 @Controller
 public class RedirectionController {
