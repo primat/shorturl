@@ -30,12 +30,8 @@ public class ShortUrlService {
      */
     public ShortUrl create(String url) {
         ShortUrl shortUrl;
-        //try {
+
         shortUrl = shortUrlRepository.save(new ShortUrl(url));
-//        }
-//        catch(DataIntegrityViolationException e) {
-//            throw
-//        }
 
         if (shortUrl != null) {
             shortUrl.setSlug(base62Service.encode(shortUrl.getId()));
@@ -75,26 +71,6 @@ public class ShortUrlService {
 
         return shortUrl;
     }
-
-//    /**
-//     * Get an existing {@link ShortUrl} or create a new one, based on the input URL.
-//     * @param url The value to use to find an existing {@link ShortUrl} or to create a new one.
-//     * @return Returns a ResponseEntity with a {@link ShortUrl} and indicating if it was created or not
-//     */
-//    @Transactional
-//    public ResponseEntity<ShortUrl> getOrCreate(String url) {
-//        ShortUrl shortUrl = shortUrlRepository.findByUrl(url);
-//
-//        // No ShortUrl was found. Create it and return an appropriate response.
-//        if (shortUrl == null) {
-//            ShortUrl newShortUrl = shortUrlRepository.save(new ShortUrl(url));
-//            newShortUrl.setSlug(base62Service.encode(newShortUrl.getId()));
-//            return new ResponseEntity<>(newShortUrl, new HttpHeaders(), HttpStatus.CREATED);
-//        }
-//
-//        shortUrl.setSlug(base62Service.encode(shortUrl.getId()));
-//        return ResponseEntity.ok(shortUrl);
-//    }
 
     /**
      * Validates a short URL slug
