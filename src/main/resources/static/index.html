@@ -26,9 +26,18 @@
             <br />
 
             <div ng-show="ctrl.url.short == '' && ctrl.url.long == ''">
-                <div class="alert alert-danger" role="alert" ng-show="ctrl.form.errors.length > 0">
-                    <div ng-repeat="(i, val) in ctrl.form.errors">
-                        {{val}}
+
+                <div class="alert alert-danger" role="alert" ng-show="ctrl.form.errorMessage">
+                    <p>{{ ctrl.form.errorMessage }}</p>
+
+                    <div ng-if="ctrl.form.errors" ng-repeat="(i, error) in ctrl.form.errors">
+                        {{ error }}
+                    </div>
+
+                    <div ng-if="ctrl.form.fieldErrors" ng-repeat="(field, errorList) in ctrl.form.fieldErrors">
+                        <div ng-repeat="(j, fieldError) in errorList">
+                        {{ field + ": " + fieldError }}
+                        </div>
                     </div>
                 </div>
 

@@ -37,7 +37,7 @@ public class RedirectionController {
     public ResponseEntity redirect(@PathVariable String slug) {
 
         // Get the short URL by its slug and return a 404 if no such slug exists
-        ShortUrl shortUrl = shortUrlService.getBySlug(slug);
+        ShortUrl shortUrl = shortUrlService.findBySlug(slug);
 
         if (shortUrl == null) {
             return new ResponseEntity<>("404 Not Found", HttpStatus.NOT_FOUND);

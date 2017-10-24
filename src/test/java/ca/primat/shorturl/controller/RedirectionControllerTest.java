@@ -35,14 +35,14 @@ public class RedirectionControllerTest {
 
         // Test when a record is returned
         ShortUrl stubShortUrl = new ShortUrl("http://example.com");
-        Mockito.when(shortUrlService.getBySlug(anyString())).thenReturn(stubShortUrl);
+        Mockito.when(shortUrlService.findBySlug(anyString())).thenReturn(stubShortUrl);
         this.mockMvc.perform(get("/a"))
                 .andExpect(status().is(303))
                 .andExpect(header().string("Location",stubShortUrl.getUrl() ))
                 .andDo(print());
 
         // Test when no record is returned
-        Mockito.when(shortUrlService.getBySlug(anyString())).thenReturn(null);
+        Mockito.when(shortUrlService.findBySlug(anyString())).thenReturn(null);
         this.mockMvc.perform(get("/a"))
                 .andExpect(status().isNotFound())
                 .andDo(print());

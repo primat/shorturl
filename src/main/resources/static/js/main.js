@@ -16,7 +16,9 @@
 
         // Hold form errors
         this.form = {
-            errors: []
+            errorMessage: "",
+            errors: [],
+            fieldErrors: {}
         };
 
         // Hols form field values
@@ -40,7 +42,6 @@
                 data: this.fields
 
             }).then(function successCallback(response) {
-
                 // Build the absolute short URL from the slug, current scheme and domain name
                 var loc = window.location;
                 self.url.short = loc.protocol + "//" + loc.host + "/" + loc.pathname.split('/')[1] + response.data.slug;
@@ -48,7 +49,12 @@
                 self.fields.url = "";
 
             }, function errorCallback(response) {
+                self.form.errorMessage = response.data.message;
                 self.form.errors = response.data.errors;
+                self.form.fieldErrors = response.data.fieldErrors;
+                if (!self.form.errorMessage && !self.form.errors && !self.form.fieldErrors) {
+                    self.form.errorMessage = "An undefined error occurred";
+                }
             });
         }
 

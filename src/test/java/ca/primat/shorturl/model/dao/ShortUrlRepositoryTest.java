@@ -24,7 +24,7 @@ public class ShortUrlRepositoryTest {
     @Test
     public void whenFindByUrl_thenReturnShortUrl() {
 
-        ShortUrl shortUrl = new ShortUrl("https://googla.ca");
+        ShortUrl shortUrl = new ShortUrl("https://example.com");
         entityManager.persist(shortUrl);
         entityManager.flush();
 
@@ -33,6 +33,6 @@ public class ShortUrlRepositoryTest {
 
         // then
         assertThat(found.getUrl()).isEqualTo(shortUrl.getUrl());
-        assertThat(found.getId()).isEqualTo(1L);
+        assertThat(found.getId() > 0L).isTrue();
     }
 }

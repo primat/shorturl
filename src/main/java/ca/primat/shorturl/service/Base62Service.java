@@ -22,7 +22,7 @@ public class Base62Service {
      * Constructor. Initialize DIGITS_MAP.
      */
     public Base62Service() {
-        DIGITS_MAP = new HashMap<Character, Integer>();
+        DIGITS_MAP = new HashMap<>();
         for (int i = 0; i < DIGITS_STRING.length(); i++) {
             DIGITS_MAP.put(DIGITS_ARRAY[i], i);
         }
@@ -69,6 +69,11 @@ public class Base62Service {
             throw new IllegalArgumentException();
         }
 
+        // Handle base case
+        if (value == 0L) {
+            return "0";
+        }
+
         // Keep dividing by BASE and taking the remainder. Using the remainder as the index
         // in DIGITS_ARRAY, build each digit in resulting number
         final StringBuilder sb = new StringBuilder(1);
@@ -77,7 +82,7 @@ public class Base62Service {
             char c = DIGITS_ARRAY[(int)(value % BASE)];
             sb.insert(0, c);
             value /= BASE;
-        } while (value > 0);
+        } while (value > 0L);
 
         return sb.toString();
     }

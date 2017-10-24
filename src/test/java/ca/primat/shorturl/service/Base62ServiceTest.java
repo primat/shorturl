@@ -1,20 +1,22 @@
 package ca.primat.shorturl.service;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
 public class Base62ServiceTest {
 
-    @Autowired
     private Base62Service base62Service;
+
+    @Before
+    public void setUp() {
+        base62Service = new Base62Service();
+    }
 
     @Test
     public void testEncode() {
@@ -27,7 +29,7 @@ public class Base62ServiceTest {
         assertThat(base62Service.encode(839299365868340222L)).isEqualTo("ZZZZZZZZZY");
         assertThat(base62Service.encode(839299365868340223L)).isEqualTo("ZZZZZZZZZZ");
         assertThat(base62Service.encode(839299365868340224L)).isEqualTo("10000000000");
-        assertThatThrownBy(() -> { base62Service.encode(-1L); }).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy( () -> base62Service.encode(-1L) ).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -41,6 +43,6 @@ public class Base62ServiceTest {
         assertThat(base62Service.decode("ZZZZZZZZZY")).isEqualTo(839299365868340222L);
         assertThat(base62Service.decode("ZZZZZZZZZZ")).isEqualTo(839299365868340223L);
         assertThat(base62Service.decode("10000000000")).isEqualTo(839299365868340224L);
-        assertThatThrownBy(() -> { base62Service.decode("-"); }).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy( () -> base62Service.decode("-1") ).isInstanceOf(IllegalArgumentException.class);
     }
 }

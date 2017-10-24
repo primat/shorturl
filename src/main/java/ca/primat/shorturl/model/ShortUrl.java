@@ -19,26 +19,39 @@ public class ShortUrl {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @JsonIgnore
-    private long id = -1;
+    private Long id; // Initialized to an invalid ID
 
     @Transient
-    private String slug; // Holds the the id encoded as a base62 string
+    private String slug = ""; // Holds the the id encoded as a base62 string
 
     @URL
     @Length(min = 1, max = 255)
     @NotEmpty
     @Column(unique=true)
-    private String url; // Holds the absolute URL that the short version maps to.
+    private String url = ""; // Holds the absolute URL that the short version maps to.
 
-    public ShortUrl() {} // Required for bean
+    public ShortUrl() {
+        super();
+    }
 
     public ShortUrl(String url) {
+        super();
         this.url = url;
-        this.slug = "";
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "ShortUrl[id=%d, slug='%s', usrl='%s']",
+                id, slug, url);
     }
 
     public Long getId() {
         return id;
+    }
+
+    public String getSlug() {
+        return slug;
     }
 
     public String getUrl() {
@@ -49,8 +62,8 @@ public class ShortUrl {
         this.id = id;
     }
 
-    public String getSlug() {
-        return slug;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public void setSlug(String slug) {

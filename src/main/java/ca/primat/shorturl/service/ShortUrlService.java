@@ -3,14 +3,8 @@ package ca.primat.shorturl.service;
 import ca.primat.shorturl.model.dao.ShortUrlRepository;
 import ca.primat.shorturl.model.ShortUrl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,13 +24,24 @@ public class ShortUrlService {
     }
 
     /**
-     * Calculates a {@link ShortUrl}'s slug and assigns it, assuming it has a non-zero ID
-     * @param shortUrl the {@link ShortUrl} to assign its slug
+     * Create a new {@link ShortUrl} from an absolute URL
+     * @param url The value to use to find an existing {@link ShortUrl} or to create a new one.
+     * @return Returns a ResponseEntity with a {@link ShortUrl} and indicating if it was created or not
      */
-    void assignSlug(ShortUrl shortUrl) {
-        if (shortUrl != null && shortUrl.getId() >= 0) {
+    public ShortUrl create(String url) {
+        ShortUrl shortUrl;
+        //try {
+        shortUrl = shortUrlRepository.save(new ShortUrl(url));
+//        }
+//        catch(DataIntegrityViolationException e) {
+//            throw
+//        }
+
+        if (shortUrl != null) {
             shortUrl.setSlug(base62Service.encode(shortUrl.getId()));
         }
+
+        return shortUrl;
     }
 
     /**
@@ -44,39 +49,52 @@ public class ShortUrlService {
      * @param slug The slug of the {@link ShortUrl}
      * @return The {@link ShortUrl} object
      */
-    public ShortUrl getBySlug(String slug) {
+    public ShortUrl findBySlug(String slug) {
         long lookupId = base62Service.decode(slug);
         ShortUrl shortUrl = shortUrlRepository.findOne(lookupId);
-        this.assignSlug(shortUrl);
+
+        // Don't recalculate the slug if the query was successful
+        if (shortUrl != null) {
+            shortUrl.setSlug(slug);
+        }
+
         return shortUrl;
     }
 
     /**
-     * Get an existing {@link ShortUrl}, or create a new one
-     * @param newShortUrl The input {@link ShortUrl} to get or create
-     * @return Returns an existing or new {@link ShortUrl}.
+     * Finds a ShortUrl from a given URL
+     * @param url The search criteria
+     * @return The found {@link ShortUrl} or null if none was found
      */
-    @Transactional
-    public ResponseEntity<ShortUrl> getOrCreate(ShortUrl newShortUrl) {
+    public ShortUrl findByUrl(String url) {
+        ShortUrl shortUrl = shortUrlRepository.findByUrl(url);
 
-        ShortUrl shortUrl = shortUrlRepository.findByUrl(newShortUrl.getUrl());
-
-        if (shortUrl == null) { // No such shortUrl exists. Create it.
-            shortUrlRepository.save(newShortUrl);
-            this.assignSlug(newShortUrl);
-
-            HttpHeaders headers = new HttpHeaders();
-            URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                    .path("/{slug}")
-                    .buildAndExpand(newShortUrl.getSlug())
-                    .toUri();
-            headers.setLocation(location);
-            return new ResponseEntity<>(newShortUrl, headers, HttpStatus.CREATED);
+        if (shortUrl != null) {
+            shortUrl.setSlug(base62Service.encode(shortUrl.getId()));
         }
 
-        this.assignSlug(shortUrl);
-        return ResponseEntity.ok(shortUrl);
+        return shortUrl;
     }
+
+//    /**
+//     * Get an existing {@link ShortUrl} or create a new one, based on the input URL.
+//     * @param url The value to use to find an existing {@link ShortUrl} or to create a new one.
+//     * @return Returns a ResponseEntity with a {@link ShortUrl} and indicating if it was created or not
+//     */
+//    @Transactional
+//    public ResponseEntity<ShortUrl> getOrCreate(String url) {
+//        ShortUrl shortUrl = shortUrlRepository.findByUrl(url);
+//
+//        // No ShortUrl was found. Create it and return an appropriate response.
+//        if (shortUrl == null) {
+//            ShortUrl newShortUrl = shortUrlRepository.save(new ShortUrl(url));
+//            newShortUrl.setSlug(base62Service.encode(newShortUrl.getId()));
+//            return new ResponseEntity<>(newShortUrl, new HttpHeaders(), HttpStatus.CREATED);
+//        }
+//
+//        shortUrl.setSlug(base62Service.encode(shortUrl.getId()));
+//        return ResponseEntity.ok(shortUrl);
+//    }
 
     /**
      * Validates a short URL slug
