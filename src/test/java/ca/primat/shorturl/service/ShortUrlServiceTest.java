@@ -30,10 +30,6 @@ public class ShortUrlServiceTest {
         base62ServiceMock = Mockito.mock(Base62Service.class);
         shortUrlRepositoryMock = Mockito.mock(ShortUrlRepository.class);
         shortUrlService = new ShortUrlService(base62ServiceMock, shortUrlRepositoryMock);
-
-        // Mock a servlet to test the shortened URL
-        //MockHttpServletRequest request = new MockHttpServletRequest();
-        //RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
     }
 
     @Test
@@ -85,7 +81,9 @@ public class ShortUrlServiceTest {
         // Return anything, it doesn't matter since we're mocking the next call to the repo
         Mockito.when(base62ServiceMock.decode(anyString())).thenReturn(10L);
         Mockito.when(shortUrlRepositoryMock.findOne(anyLong())).thenReturn(new ShortUrl("https://example.com"));
+
         ShortUrl shortUrl = shortUrlService.findBySlug("anySlug");
+
         assertThat(shortUrl.getSlug()).isEqualTo("anySlug");
     }
 
@@ -108,7 +106,6 @@ public class ShortUrlServiceTest {
 
         ShortUrl shortUrl = shortUrlService.findByUrl("https://example.com");
 
-        //verify(shortUrl.setSlug("aaa"));
         assertThat(shortUrl.getUrl()).isEqualTo("https://example.com");
         assertThat(shortUrl.getSlug()).isEqualTo("aaa");
     }
