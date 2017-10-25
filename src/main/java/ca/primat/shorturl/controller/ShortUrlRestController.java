@@ -5,6 +5,7 @@ import ca.primat.shorturl.exception.rest.NotFoundException;
 import ca.primat.shorturl.model.ShortUrl;
 import ca.primat.shorturl.service.ShortUrlService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ import java.net.URI;
 @RequestMapping("/api/v1/shorturl")
 public class ShortUrlRestController {
 
-    private static final String ENDPOINT_PATH = "/api/v1/shorturl/";
+    public static final String ENDPOINT_PATH = "/api/v1/shorturl/";
     private final ShortUrlService shortUrlService;
 
     @Autowired
@@ -43,8 +44,10 @@ public class ShortUrlRestController {
         try {
             newShortUrl = shortUrlService.create(url.getUrl());
         }
-        catch(org.springframework.dao.DataIntegrityViolationException e) {
+        catch(DataIntegrityViolationException e) {
             // Couldn't create the ShortUrl because it already exists. Get the existing one and return it instead.
+            // NOTE: The exception is too generic but since there there's no simple way to manage data
+            // integrity constraints, it'll have to do for now
             ShortUrl shortUrl = shortUrlService.findByUrl(url.getUrl());
 
             if (shortUrl == null) {
@@ -60,8 +63,13 @@ public class ShortUrlRestController {
             throw new InternalServerErrorException("Creation of the ShortUrl failed");
         }
         else {
+
+
+            System.out.println(newShortUrl.getSlug());
+
+
             URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                    .path(ENDPOINT_PATH)
+                    .replacePath(ENDPOINT_PATH + "/{slug}")
                     .buildAndExpand(newShortUrl.getSlug())
                     .toUri();
             headers.setLocation(location);

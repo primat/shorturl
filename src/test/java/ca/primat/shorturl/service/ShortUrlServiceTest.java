@@ -69,7 +69,7 @@ public class ShortUrlServiceTest {
         assertThat(shortUrl).isNull();
     }
 
-    @Test(expected=DataIntegrityViolationException.class)
+    @Test(expected = DataIntegrityViolationException.class)
     public void whenCreate_ThenThrowDataIntegrityException() {
         Mockito.when(shortUrlRepositoryMock.save(any(ShortUrl.class)))
                 .thenThrow(new DataIntegrityViolationException("test"));
